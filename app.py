@@ -1,22 +1,23 @@
-from utils import Formatter
-from geolocation import GeoLocation 
-from project_setup import ProjectSetup
-from flask import Flask, render_template, request
+from formatter import Formatter
+from utils import create_requirements
+from features.steps import project_setup
+from flask import Flask, render_template, request, send_file
 
 app = Flask(__name__)
-formatter = Formatter()
+
 
 @app.route('/', methods=['GET', 'POST'])
 def base():
+    Format = Formatter(filename=project_setup)
     if request.method == 'GET':
-        return render_template("index.html", Data=[])
+        return render_template("index.html", F=Format)
+    
     else:
-        print(request.form)
-        if request.form.get('micromvd') == 'geolocation':
-            Data = formatter.format(GeoLocation)
-        else:
-            Data = formatter.format(ProjectSetup)
-        return render_template("index.html", Data=Data)
+        create_requirements(Format, request.form)
+        return send_file('features/project_setup.feature',
+                            mimetype='text/csv',
+                            attachment_filename=f'project_setup.feature',
+                            as_attachment=True)
 
 
 if __name__ == '__main__':

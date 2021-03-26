@@ -254,18 +254,18 @@ img.active-flag {
     padding-bottom: 5px;
 }
 
-.vendor-full {
+.vendor-F {
     border-bottom: 5px solid #b6cca1;
 }
 
-.vendor-unknown {
+.vendor-U {
     border-bottom: 5px solid #555;
 }
 
-.vendor-partial {
+.vendor-P {
     border-bottom: 5px solid #ffd37f;
 }
 
-.vendor-bad {
+.vendor-B {
     border-bottom: 5px solid #fbb4a8;
 }

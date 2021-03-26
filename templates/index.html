@@ -24,7 +24,7 @@
             </span>
         </h1>
         </header>
-        <form class="form-inline" method="POST" action="/">
+        <form action="/" class="form-inline" method="post">
         <div class="row">
             <section class="eight columns">
                 <div class="tcenter">
@@ -36,65 +36,64 @@
                 </div>
 
                 <select id="Options" name="micromvd">
-                    <option selected disabled hidden style='display: none' value=""></option>
                     <option value='project_setup'>Project setup</option>
-                    <option value='geolocation'>GeoLocation</option>
                 </select>
-                <button type="submit" id='Value' class="btn btn-default">Go</button>
 
                 <p class="tcenter">
-                    In order to ensure quality of the digital built environment<br />
-                    As a responsible digital citizen<br />
-                    We expect compliant OpenBIM deliverables<br />
+                    {% for i in F.get_intro() %}
+                        {{ i }}<br />
+                    {% endfor %}
                 </p>
                 
                 <div class="tcenter" style="margin-bottom: 20px;">
-                    <h2 style="border-bottom: 0px; display: inline; padding-right: 20px;">
-                        Import
-                    </h2>
-                    <img class="vendor-icon vendor-full" src="static/images/archicad.png" width="24px">
-                    <img class="vendor-icon vendor-full" src="static/images/blenderbim.png" width="24px">
-                    <img class="vendor-icon vendor-partial" src="static/images/freecad.png" width="24px">
-                    <img class="vendor-icon vendor-bad" src="static/images/revit.png" width="24px">
-                    <img class="vendor-icon vendor-unknown" src="static/images/tekla.png" width="24px">
+                    {% set v = F.get_vendors() %}
+                        <h2 style="border-bottom: 0px; display: inline; padding-right: 20px;">
+                            Import
+                        </h2>
+                        <img class="vendor-icon vendor-{{v[0]}}" src="static/images/archicad.png" width="24px">
+                        <img class="vendor-icon vendor-{{v[1]}}" src="static/images/blenderbim.png" width="24px">
+                        <img class="vendor-icon vendor-{{v[2]}}" src="static/images/freecad.png" width="24px">
+                        <img class="vendor-icon vendor-{{v[3]}}" src="static/images/revit.png" width="24px">
+                        <img class="vendor-icon vendor-{{v[4]}}" src="static/images/tekla.png" width="24px">
 
-                    <h2 style="border-bottom: 0px; display: inline; padding-right: 20px; padding-left: 20px;">
-                        Export
-                    </h2>
-                    <img class="vendor-icon vendor-partial" src="static/images/archicad.png" width="24px">
-                    <img class="vendor-icon vendor-full" src="static/images/blenderbim.png" width="24px">
-                    <img class="vendor-icon vendor-partial" src="static/images/freecad.png" width="24px">
-                    <img class="vendor-icon vendor-full" src="static/images/revit.png" width="24px">
-                    <img class="vendor-icon vendor-unknown" src="static/images/tekla.png" width="24px">
-
+                        <h2 style="border-bottom: 0px; display: inline; padding-right: 20px; padding-left: 20px;">
+                            Export
+                        </h2>
+                        <img class="vendor-icon vendor-{{v[5]}}" src="static/images/archicad.png" width="24px">
+                        <img class="vendor-icon vendor-{{v[6]}}" src="static/images/blenderbim.png" width="24px">
+                        <img class="vendor-icon vendor-{{v[7]}}" src="static/images/freecad.png" width="24px">
+                        <img class="vendor-icon vendor-{{v[8]}}" src="static/images/revit.png" width="24px">
+                        <img class="vendor-icon vendor-{{v[9]}}" src="static/images/tekla.png" width="24px">
                     <span style="color: #999; display: block;">Need help meeting these requirements with a vendor? <a
-                            href="#">Read more</a></span>
+                            href="https://wiki.osarch.org/index.php?title=Project_setup_MicroMVD">Read more</a></span>
                 </div>
-                {% for Heading, Docs in Data %}
+                {% for (Scenario, Dict) in F.get_scenarios().items() %}
                 {% set outer_loop = loop %}
+                {% set Heading = F.get_headings() %}
                 <h2>
-                    Scenario: {{ Heading }}
+                    {{ Scenario }}
+                    <input type="hidden" name="Scen_{{outer_loop.index}}", value="{{ Scenario }}">
                 </h2>
-                
                 <ol>
-                    {% for (Text, Example, Description) in Docs %}
+                    {% for (Example, Description) in Dict %}
                     <li>
                         <details>
                             
                                 <summary>
-                                    {{Text | safe}}
-                                </summary>
+                                    {{ Heading[outer_loop.index + loop.index - 2] | safe}}
+                                    <input type="text" name="Input_{{outer_loop.index}}_{{loop.index}}">
+                                    </summary>
+                                
                                 <strong>
                                     Example: {{ Example }}
                                 </strong>
                                 <p>
                                     {{ Description }}
                                 </p>
-                                <code contenteditable>"{schema}"</code>
 
                             <div style="padding-bottom: 20px;">
                                 <div class="onoffswitch">
-                                    <input type="checkbox" name="onoffswitch_{{outer_loop.index}}_{{loop.index}}" class="onoffswitch-checkbox"
+                                    <input type="checkbox" name="Switch_{{outer_loop.index}}_{{loop.index}}" class="onoffswitch-checkbox"
                                         id="{{outer_loop.index}}_{{loop.index}}" tabindex="{{outer_loop.index}}_{{loop.index}}" checked>
                                     <label class="onoffswitch-label" for="{{outer_loop.index}}_{{loop.index}}">
                                         <span class="onoffswitch-inner"></span>

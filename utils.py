@@ -1,43 +1,55 @@
 import re
-import inspect
-from collections import defaultdict
+
+def remove_spaces(text) -> str:
+    return ' '.join(text.split())
 
 
-class Formatter:
-    def __init__(self):
-        self.start_html = '<code name="Code" value="HI" id="None" contenteditable>'
-        self.end_html = '</code>'
+def remove_arrows(text) -> str:
+    return text.replace('-->', '')
 
-    def get_methods(self, class_name):
-        members = inspect.getmembers(class_name, predicate=inspect.isfunction)
-        function_calls = list(map(lambda z: z[1], members))
-        return function_calls
-    
-    def remove_new_lines(self, text):
-        return ' '.join(text.split())
 
-    def add_html_tag(self, text):
-        for s in re.findall('"([^"]*)"', text):
-            text = text.replace(s, f'{self.start_html}{s}{self.end_html}')
-        return text
+def insert_html(text, req=False) -> str:
+    text = text.replace("'", '')
+    for s in re.findall('"([^"]*)"', text):
+        if not req:
+            text = text.replace(
+                s, f'<code contenteditable>{s}</code>')
+        else:
+            text = text.replace(s, '{}')
+    return text
 
-    def style_doc(self, data):
-        Scenario = data[0].split(' ', 1)[1]
-        Text = self.add_html_tag(data[1])
-        Example = data[2].split(' ', 1)[1]
-        Description = data[3].split(' ', 1)[1]
-        return Scenario, Text, Example, Description
-    
-    def format(self, class_name):
-        fun_calls = self.get_methods(class_name)
 
-        Final_Docs = defaultdict(list)
-        for call in fun_calls:
-            docs = inspect.getdoc(call).split('\n\n')
-            docs_list = list(map(self.remove_new_lines, docs))
-            scen, text, example, description = self.style_doc(docs_list)
-            
-            Final_Docs[scen].append((text, example, description))
-        
-        Final_Docs = sorted(Final_Docs.items(), key=lambda z: len(z[1]))
-        return Final_Docs
+def create_requirements(Format, args):
+    idx = 1
+    text = 'Feature: Project setup\n\n'
+    Headings = Format.get_headings(req=True)
+    for intro in Format.get_intro():
+        text += f'{intro}\n'
+    text += '\n'
+
+    while True:
+        scenario = args.get(f'Scen_{str(idx)}')
+        idx_inside = 1
+        if scenario:
+            text += f'{scenario}\n'
+        while True:
+            _input = args.get(f'Input_{str(idx)}_{str(idx_inside)}')
+
+            headings = Headings[idx+idx_inside-2].format(_input)
+            switch = args.get(f'Switch_{str(idx)}_{str(idx_inside)}')
+            if switch:
+                text += f'\t* {headings}\n'
+            idx_inside += 1
+
+            if _input is None:
+                break
+
+        text += '\n'
+        idx += 1
+        if not scenario:
+            break
+    print(text)
+
+    file = open('features/project_setup.feature', 'w')
+    file.write(text)
+    file.close()
