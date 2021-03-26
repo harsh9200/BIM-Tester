@@ -11,7 +11,7 @@ class Formatter:
         self.step_pattern = '@step\((.*?)\)'
     
     def get_intro(self) -> list:
-        return list(map(remove_spaces, self.file_docs[0].split('\n')[2:]))
+        return list(map(remove_spaces, self.file_docs[1].split('\n')[1:]))
 
     def get_vendors(self) -> list:
         v = re.findall(self.vendor_pattern, ''.join(self.file_docs[2:4]))
