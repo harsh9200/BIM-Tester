@@ -1,0 +1,123 @@
+{
+  "featureName": "Feature: Geolocation",
+  "featureInfo": "In order to query data in real world coordinates\nAs a recipient expecting to integrate BIM and GIS datasets\nGeolocation data must be stored correctly in received files",
+  "vendorsImport": {
+    "ArchiCAD": ["Partial", "https://foobar1.com "],
+    "BlenderBIM": ["Full", "https://foobar2.com"],
+    "FreeCAD": ["Partial", "https://foobar3.com"],
+    "Revit": ["Broken", "https://foobar4.com"],
+    "Tekla": ["Unknown", "https://foobar5.com"]
+  },
+  "vendorsExport": {
+    "ArchiCAD": ["Partial", "https://foobar6.com"],
+    "BlenderBIM": ["Full", "https://foobar7.com"],
+    "FreeCAD": ["Partial", "https://foobar8.com"],
+    "Revit": ["Full", "https://foobar9.com "],
+    "Tekla": ["Unknown", "https://foobar10.com"]
+  },
+  "scenarios": {
+    "Scenario: Geometry is georeferenced to a coordinate reference system": [
+      [
+        "There must be at least one \"<code contenteditable>{ifc_class}</code>\" element",
+        "There must be at least one \"ifc_site\" element",
+        "Description\n"
+      ],
+      [
+        "The project must have coordinate reference system data",
+        "The project must have coordinate reference system data",
+        "Description\n"
+      ],
+      [
+        "The name of the CRS must be \"<code contenteditable>{coordinate_reference_name}</code>\"",
+        "The name of the CRS must be \"EPSG:7856\"",
+        "Description\n"
+      ],
+      [
+        "The description of the CRS must be \"<code contenteditable>{value}</code>\"",
+        "The description of the CRS must be \"Anything\"",
+        "Description\n"
+      ],
+      [
+        "The geodetic datum must be \"<code contenteditable>{coordinate_reference_name}</code>\"",
+        "The geodetic datum must be \"EPSG:7856\"",
+        "Description\n"
+      ],
+      [
+        "The vertical datum must be \"<code contenteditable>{coordinate_reference_name}</code>\"",
+        "The vertical datum must be \"EPSG:7856\"",
+        "Description\n"
+      ],
+      [
+        "The map projection must be \"<code contenteditable>{coordinate_reference_name}</code>\"",
+        "The map projection must be \"EPSG:7856\"",
+        "Description\n"
+      ],
+      [
+        "The map zone must be \"<code contenteditable>{coordinate_reference_name}</code>\"",
+        "The map zone must be \"EPSG:7856\"",
+        "Description\n"
+      ],
+      [
+        "The map unit must be \"<code contenteditable>{unit}</code>\"",
+        "The map unit must be  \"Metre\"",
+        "Description\n"
+      ]
+    ],
+    "Scenario: Local coordinate systems are specified relative to a global system": [
+      [
+        "The project must have coordinate transformations to convert from local to global coordinates",
+        "The project must have coordinate transformations to convert from local to global coordinates",
+        "Description\n"
+      ],
+      [
+        "The eastings of the model must be offset by \"<code contenteditable ondblclick='this.contentEditable=true;this.className='inEdit';'>{number}</code>\" to derive its global coordinates",
+        "The eastings of the model must be offset by \"42.12\" to derive its global coordinates",
+        "Description\n"
+      ],
+      [
+        "The northings of the model must be offset by \"<code contenteditable>{number}</code>\" to derive its global coordinates",
+        "The northings of the model must be offset by \"42.12\" to derive its global coordinates",
+        "Description\n"
+      ],
+      [
+        "The height of the model must be offset by \"<code contenteditable>{number}</code>\" to derive its global coordinates",
+        "The height of the model must be offset by \"42.12\" to derive its global coordinates",
+        "Description\n"
+      ],
+      [
+        "The model must be rotated clockwise by \"<code contenteditable>{number}</code>\" to derive its global coordinates",
+        "The model must be rotated clockwise by \"42.12\" to derive its global coordinates",
+        "Description\n"
+      ],
+      [
+        "The model must be scaled along the horizontal axis by \"<code contenteditable>{number}</code>\" to derive its global coordinates",
+        "The model must be scaled along the horizontal axis by \"42.12\" to derive its global coordinates",
+        "Description\n"
+      ]
+    ],
+    "Scenario: A true north rotation of the project origin is provided for convenient reference": [
+      [
+        "The model must be rotated clockwise by \"<code contenteditable>{number}</code>\" for true north to point up",
+        "The model must be rotated clockwise by \"42.12\" for true north to point up",
+        "Description\n"
+      ]
+    ],
+    "Scenario: Global coordinates of the site origins are provided for convenient reference": [
+      [
+        "The site \"<code contenteditable>{guid}</code>\" has a longitude of \"<code contenteditable>{number}</code>\"",
+        "The site \"28q3AgmxP5cepIweO5Of$o\" has a longitude of \"42.12\"",
+        "Description\n"
+      ],
+      [
+        "The site \"<code contenteditable>{guid}</code>\" has a latitude of \"<code contenteditable>{number}</code>\"",
+        "The site \"28q3AgmxP5cepIweO5Of$o\" has a latitude of \"42.12\"",
+        "Description\n"
+      ],
+      [
+        "The site \"<code contenteditable>{guid}</code>\" has an elevation of \"<code contenteditable>{number}</code>\"",
+        "The site \"28q3AgmxP5cepIweO5Of$o\" has an elevation of \"42.12\"",
+        "Description\n"
+      ]
+    ]
+  }
+}

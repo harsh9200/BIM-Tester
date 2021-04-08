@@ -14,17 +14,18 @@
 
     <meta name="theme-color" content="#fafafa">
 </head>
-
 <body>
-    <header {{has_seamless_header}} class="seamless" {{has_seamless_header}}>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="static/js/main.js"></script>
+    <headerTrue class="seamless">
         <h1>
             BIMTester Requirements Generator
             <span style="font-size: 0.5em; font-style: italic;">
                 Because your BIM actually sucks but you don't know it yet.
             </span>
         </h1>
-        </header>
-        <form action="/" class="form-inline" method="post">
+    </header>
+    <form action="/" class="form-inline" method="post" onsubmit="return getContent()">
         <div class="row">
             <section class="eight columns">
                 <div class="tcenter">
@@ -34,68 +35,72 @@
                     <img src="static/images/fr.svg" class="flag" title="French">
                     <img src="static/images/nl.svg" class="flag" title="Dutch">
                 </div>
-
-                <select id="Options" name="micromvd">
-                    <option value='project_setup'>Project setup</option>
+                <select id="Options" onchange="if (this.value) window.location.href=this.value">
+                    <option value="{{url_for('base', value='project_setup')}}"{{'selected="selected"' if feat=='project_setup'}}> 
+                        Project Setup 
+                    </option>
+                    <option value="{{url_for('base', value='geolocation')}}" {{'selected="selected"' if feat=='geolocation'}}> 
+                        Geoloaction 
+                    </option>
                 </select>
+                <input type='hidden' name='feature_name' value='{{F["featureName"]}}'>
 
                 <p class="tcenter">
-                    {% for i in F.get_intro() %}
-                        {{ i }}<br />
-                    {% endfor %}
+                    {% set feature_info = F['featureInfo'].replace('\n', '<br />') %}
+                        {{feature_info|safe}}
+                    <input type="hidden" name="feature_intro" value="{{F['featureInfo']}}"/>
                 </p>
                 
                 <div class="tcenter" style="margin-bottom: 20px;">
-                    {% set v = F.get_vendors() %}
-                        <h2 style="border-bottom: 0px; display: inline; padding-right: 20px;">
-                            Import
-                        </h2>
-                        <img class="vendor-icon vendor-{{v[0]}}" src="static/images/archicad.png" width="24px">
-                        <img class="vendor-icon vendor-{{v[1]}}" src="static/images/blenderbim.png" width="24px">
-                        <img class="vendor-icon vendor-{{v[2]}}" src="static/images/freecad.png" width="24px">
-                        <img class="vendor-icon vendor-{{v[3]}}" src="static/images/revit.png" width="24px">
-                        <img class="vendor-icon vendor-{{v[4]}}" src="static/images/tekla.png" width="24px">
-
-                        <h2 style="border-bottom: 0px; display: inline; padding-right: 20px; padding-left: 20px;">
-                            Export
-                        </h2>
-                        <img class="vendor-icon vendor-{{v[5]}}" src="static/images/archicad.png" width="24px">
-                        <img class="vendor-icon vendor-{{v[6]}}" src="static/images/blenderbim.png" width="24px">
-                        <img class="vendor-icon vendor-{{v[7]}}" src="static/images/freecad.png" width="24px">
-                        <img class="vendor-icon vendor-{{v[8]}}" src="static/images/revit.png" width="24px">
-                        <img class="vendor-icon vendor-{{v[9]}}" src="static/images/tekla.png" width="24px">
-                    <span style="color: #999; display: block;">Need help meeting these requirements with a vendor? <a
-                            href="https://wiki.osarch.org/index.php?title=Project_setup_MicroMVD">Read more</a></span>
+                    <h2 style="border-bottom: 0px; display: inline; padding-right: 20px;"> Import </h2>
+                    
+                    {% for vendor, (status, ref) in F['vendorsImport'].items() %}
+                        <a id="special" href={{ref}} style="text-decoration: none;">
+                            <img class="vendor-icon vendor-{{status}}" src="static/images/{{vendor}}.png" width="24px">
+                        </a>
+                    {% endfor %}
+                    
+                    <h2 style="border-bottom: 0px; display: inline; padding-right: 20px; padding-left: 20px;"> Export </h2>
+                    
+                    {% for vendor, (status, ref) in F['vendorsExport'].items() %}
+                        <a id="special" href={{ref}} style="text-decoration: none;">
+                            <img class="vendor-icon vendor-{{status}}" src="static/images/{{vendor}}.png" width="24px">
+                        </a>
+                    {% endfor %}
+                    
+                    <h2 style="border-bottom: 0px; display: inline; padding-right: 20px; padding-left: 20px;">
+                        <span style="color: #999; display: block;">Need help meeting these requirements with a vendor? 
+                            <a href="https://wiki.osarch.org/index.php?title=Project_setup_MicroMVD">Read more</a>
+                        </span>
+                    </h2>
                 </div>
-                {% for (Scenario, Dict) in F.get_scenarios().items() %}
+                <input type="hidden" id="scenario" name="scenario" value="{{F['featureInfo']}}"/>
+                {% for (scenario, step_info) in F['scenarios'].items() %}
                 {% set outer_loop = loop %}
-                {% set Heading = F.get_headings() %}
                 <h2>
-                    {{ Scenario }}
-                    <input type="hidden" name="Scen_{{outer_loop.index}}", value="{{ Scenario }}">
+                    {{scenario}}
+                    <input type="hidden" id="{{outer_loop.index}}" name="{{outer_loop.index}}" value="{{scenario}}" />
                 </h2>
                 <ol>
-                    {% for (Example, Description) in Dict %}
+                    {% for (step, example, description) in step_info %}
                     <li>
                         <details>
                             
                                 <summary>
-                                    {{ Heading[outer_loop.index + loop.index - 2] | safe}}
-                                    <input type="text" name="Input_{{outer_loop.index}}_{{loop.index}}">
-                                    </summary>
+                                    {{step|safe}}
+                                </summary>
                                 
                                 <strong>
-                                    Example: {{ Example }}
+                                    Example: {{example}}
                                 </strong>
                                 <p>
-                                    {{ Description }}
+                                    {{description}}
                                 </p>
-
                             <div style="padding-bottom: 20px;">
                                 <div class="onoffswitch">
-                                    <input type="checkbox" name="Switch_{{outer_loop.index}}_{{loop.index}}" class="onoffswitch-checkbox"
-                                        id="{{outer_loop.index}}_{{loop.index}}" tabindex="{{outer_loop.index}}_{{loop.index}}" checked>
-                                    <label class="onoffswitch-label" for="{{outer_loop.index}}_{{loop.index}}">
+                                    <input type="checkbox" class="onoffswitch-checkbox" name="Switch_{{outer_loop.index}}.{{loop.index}}"
+                                        id="{{outer_loop.index}}.{{loop.index}}" tabindex="{{outer_loop.index}}.{{loop.index}}" checked>
+                                    <label class="onoffswitch-label" for="{{outer_loop.index}}.{{loop.index}}">
                                         <span class="onoffswitch-inner"></span>
                                         <span class="onoffswitch-switch"></span>
                                     </label>
@@ -106,7 +111,6 @@
                     {% endfor %}
                 </ol>
                 {% endfor %}
-
             </section>
             <aside class="four columns">
                 <p>
@@ -136,9 +140,7 @@
                     Download the requirements file and include it in contracts.
                 </p>
                 <p>
-                    <button type="submit" class="button button-primary">Download Requirements</button>
-                    <!-- <button type="submit" id='requirements' class="btn btn-default">GO</button> -->
-                    &nbsp;&nbsp;&nbsp;
+                    <button type="submit" id="submit" class="button button-primary">Download Requirements</button>
                     <a href="#" class="button">Run an automatic Audit</a>
                 </p>
                 <h4>
@@ -151,14 +153,26 @@
                 </ul>
             </aside>
         </div>
-        </form>
-        <footer>
-            <p>
-                <a href="https://github.com/IfcOpenShell/IfcOpenShell/tree/v0.6.0/src/ifcbimtester">BIMTester</a> is built with &hearts; on the awesome <a href="http://www.ifcopenshell.org/">IfcOpenShell</a>
-                project by <a href="https://blenderbim.org/community.html">amazing volunteers</a>. You can be one too!
-            </p>
-        </footer>
-        <script src="static/js/main.js"></script>
+    </form>
+    <footer>
+        <p>
+            <a href="https://github.com/IfcOpenShell/IfcOpenShell/tree/v0.6.0/src/ifcbimtester">BIMTester</a> is built with &hearts; on the awesome <a href="http://www.ifcopenshell.org/">IfcOpenShell</a>
+            project by <a href="https://blenderbim.org/community.html">amazing volunteers</a>. You can be one too!
+        </p>
+    </footer>
+    <script>
+        const details = document.querySelectorAll("details");
+
+        details.forEach((targetDetail) => {
+            targetDetail.addEventListener("click", () => {
+                details.forEach((detail) => {
+                    if (detail !== targetDetail) {
+                        detail.removeAttribute("open");
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>

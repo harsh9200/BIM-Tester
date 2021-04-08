@@ -41,6 +41,13 @@ footer {
     line-height: 60px;
 }
 
+a#special {
+    display: inline-block;
+    height: 29px;
+    width: 24px;
+    margin-left: 10px;
+}
+
 a {
     color: #b85934;
 }
@@ -82,7 +89,7 @@ section h2 {
 }
 
 section ol {
-    list-style-type: None;
+list-style-type: None;
 }
 
 section ol li {
@@ -192,7 +199,9 @@ img.active-flag {
 
 .onoffswitch {
     position: relative; width: 110px;
-    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
+    -webkit-user-select:none; 
+    -moz-user-select:none; 
+    -ms-user-select: none;
 }
 .onoffswitch-checkbox {
     position: absolute;
@@ -254,18 +263,18 @@ img.active-flag {
     padding-bottom: 5px;
 }
 
-.vendor-F {
+.vendor-Full {
     border-bottom: 5px solid #b6cca1;
 }
 
-.vendor-U {
+.vendor-Unknown {
     border-bottom: 5px solid #555;
 }
 
-.vendor-P {
+.vendor-Partial {
     border-bottom: 5px solid #ffd37f;
 }
 
-.vendor-B {
+.vendor-Broken {
     border-bottom: 5px solid #fbb4a8;
 }

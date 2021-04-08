@@ -1,24 +1,34 @@
-from formatter import Formatter
-from utils import create_requirements
-from features.steps import project_setup
-from flask import Flask, render_template, request, send_file
+import os
+import json
+from utils import create_requirement, Generate_JSON
+from flask import Flask, render_template, request, send_file, redirect
 
 app = Flask(__name__)
 
-
 @app.route('/', methods=['GET', 'POST'])
 def base():
-    Format = Formatter(filename=project_setup)
+    global file_path
+    print(file_path)
     if request.method == 'GET':
-        return render_template("index.html", F=Format)
-    
+        with open(file_path, 'r') as f:
+            data = json.load(f)
+        
+        if request.args.get('value'):
+            file_path = featuresDict[request.args['value']]
+            return redirect(request.path)
+        print(os.path.basename(os.path.dirname(file_path)))
+        return render_template("index.html", F=data, feat=os.path.basename(os.path.dirname(file_path)))
     else:
-        create_requirements(Format, request.form)
-        return send_file('features/project_setup.feature',
-                            mimetype='text/csv',
-                            attachment_filename=f'project_setup.feature',
-                            as_attachment=True)
-
+        feature_path = file_path.rsplit('.')[0] + '.feature'
+        create_requirement(request.form, feature_path)
+        return send_file(feature_path,
+                         mimetype='text/csv',
+                         attachment_filename='Feature.feature',
+                         as_attachment=True)
 
 if __name__ == '__main__':
+    global file_path
+    featuresDict = Generate_JSON().features_dict()
+    file_path = featuresDict['project_setup']
+    print(file_path)
     app.run()
