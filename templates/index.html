@@ -56,7 +56,7 @@
                     
                     {% for vendor, (status, ref) in F['vendorsImport'].items() %}
                         <a id="special" href={{ref}} style="text-decoration: none;">
-                            <img class="vendor-icon vendor-{{status}}" src="static/images/{{vendor}}.png" width="24px">
+                            <img class="vendor-icon vendor-{{status}}" src="static/images/{{vendor.lower()}}.png" width="24px">
                         </a>
                     {% endfor %}
                     
@@ -64,7 +64,7 @@
                     
                     {% for vendor, (status, ref) in F['vendorsExport'].items() %}
                         <a id="special" href={{ref}} style="text-decoration: none;">
-                            <img class="vendor-icon vendor-{{status}}" src="static/images/{{vendor}}.png" width="24px">
+                            <img class="vendor-icon vendor-{{status}}" src="static/images/{{vendor.lower()}}.png" width="24px">
                         </a>
                     {% endfor %}
                     
